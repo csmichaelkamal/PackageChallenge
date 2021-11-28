@@ -28,13 +28,19 @@ namespace com.mobiquity.packer.Tests.Services
         [Test]
         public void ProcessFileLineItem_WhenPassCorrectData_ShouldReturnPackageItem()
         {
-            var packgaeItem = _packageFileHandler.ProcessFileLineItem("(1,53.38,€45)");
+            var packageItem = _packageFileHandler.ProcessFileLineItem("(1,53.38,€45)");
 
-            Assert.IsInstanceOf(typeof(PackageItem), packgaeItem);
+            Assert.IsInstanceOf(typeof(PackageItem), packageItem);
 
-            Assert.AreEqual(packgaeItem.Index, 1);
-            Assert.AreEqual(packgaeItem.Weight, 53.38, 0.5);
-            Assert.AreEqual(packgaeItem.Value, 45);
+            Assert.AreEqual(packageItem.Index, 1);
+            Assert.AreEqual(packageItem.Weight, 53.38, 0.5);
+            Assert.AreEqual(packageItem.Value, 45);
+        }
+
+        [Test]
+        public void ProcessFileLineItem_WhenMissingCurlyBraces_ShouldThrowException()
+        {
+            Assert.Throws(typeof(APIException), () => _packageFileHandler.ProcessFileLineItem("1,53.38,€45)"));
         }
 
         #endregion

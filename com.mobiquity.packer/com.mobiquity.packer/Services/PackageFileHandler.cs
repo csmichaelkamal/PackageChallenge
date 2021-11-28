@@ -15,6 +15,27 @@ namespace com.mobiquity.packer.Services
             throw new NotImplementedException();
         }
 
+        public List<PackageItem> ProcessFileLine(string fileLinePackageItems)
+        {
+            var packageItems = fileLinePackageItems.Split(' ');
+
+            if (packageItems == null || packageItems.Length < 1)
+            {
+                throw new APIException($"{nameof(packageItems)} is null");
+            }
+
+            var processedFileLines = new List<PackageItem>();
+
+            for (int i = 0; i < packageItems.Length; i++)
+            {
+                var package = ProcessFileLineItem(packageItems[i]);
+
+                processedFileLines.Add(package);
+            }
+
+            return processedFileLines;
+        }
+
         public PackageItem ProcessFileLineItem(string fileLineItem)
         {
             if (!fileLineItem.StartsWith("(") || !fileLineItem.EndsWith(")"))
