@@ -3,8 +3,9 @@ using com.mobiquity.packer.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
+using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace com.mobiquity.packer.Services
 {
@@ -12,7 +13,21 @@ namespace com.mobiquity.packer.Services
     {
         public List<Package> HandlePackageFile(string filePath)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrEmpty(filePath))
+            {
+                throw new APIException($"{nameof(filePath)} is null or empty");
+            }
+
+            var fileLines = File.ReadAllLines(filePath);
+
+            if (fileLines.Length < 1)
+            {
+                throw new APIException("Empty File Content");
+            }
+
+            var packages = ProcessFileLines(fileLines.ToList());
+
+            return packages;
         }
 
         public List<Package> ProcessFileLines(List<string> fileLines)
@@ -93,7 +108,7 @@ namespace com.mobiquity.packer.Services
             var packageItemSb = new StringBuilder(fileLineItem);
 
             packageItemSb = packageItemSb.Remove(0, 1);
-                
+
             var packageItemLength = packageItemSb.Length;
 
             packageItemSb = packageItemSb.Remove(packageItemLength - 1, 1);

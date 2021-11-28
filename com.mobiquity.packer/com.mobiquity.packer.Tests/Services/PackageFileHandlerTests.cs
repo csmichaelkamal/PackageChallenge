@@ -2,6 +2,7 @@ using com.mobiquity.packer.Models;
 using com.mobiquity.packer.Services;
 using com.mobiquity.packer.Services.Interfaces;
 using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 
 namespace com.mobiquity.packer.Tests.Services
@@ -12,6 +13,8 @@ namespace com.mobiquity.packer.Tests.Services
 
         private PackageFileHandler _packageFileHandler;
 
+        private string _baseDirectory;
+
         #endregion
 
         #region Setup
@@ -20,6 +23,7 @@ namespace com.mobiquity.packer.Tests.Services
         public void Setup()
         {
             _packageFileHandler = new PackageFileHandler();
+            _baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
         }
 
         #endregion
@@ -87,6 +91,17 @@ namespace com.mobiquity.packer.Tests.Services
             var packages = _packageFileHandler.ProcessFileLines(input);
 
             Assert.That(packages.Count == 2);
+        }
+
+        [Test]
+        [Category("ProcessFile")]
+        public void ProcessFile_WhenPassCorrectFilePath_ShouldReturnListOfParsedPackages()
+        {
+            var filePath = $"{_baseDirectory}\\TestFiles\\Packages_Valid_Data.txt";
+
+            var packages = _packageFileHandler.HandlePackageFile(filePath);
+
+            Assert.That(packages.Count == 4);
         }
 
         #endregion
