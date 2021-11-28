@@ -2,7 +2,7 @@
 
 namespace com.mobiquity.packer
 {
-    public class Class1
+    public class Packer
     {
     }
 }
