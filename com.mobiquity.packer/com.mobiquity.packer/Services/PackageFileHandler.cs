@@ -15,8 +15,55 @@ namespace com.mobiquity.packer.Services
             throw new NotImplementedException();
         }
 
+        public List<Package> ProcessFileLines(List<string> fileLines)
+        {
+            if (fileLines == null || fileLines.Count == 0)
+            {
+                return null;
+            }
+
+            var packages = new List<Package>();
+
+            foreach (var line in fileLines)
+            {
+                if (!line.Contains(":"))
+                {
+                    throw new APIException("Invalid File Line Format, " +
+                        "Line Should contains \":\" between Package Max Capacity and Package Items");
+                }
+
+                var lineParts = line.Split(':');
+
+                if (lineParts.Length > 2)
+                {
+                    throw new APIException("Invalid File Line Format, Line Should Contain ONLY one \":\"");
+                }
+
+                // Parse the first Part of the Line, the Maximum Capacity of the Package
+                var maxPackageWeight = GetNumber(lineParts[0]);
+
+                // Parse the Package Items that might be Included / Selected in the Package
+                var packageItems = ProcessFileLine(lineParts[1].Trim());
+
+                // Construct Package and return the List
+
+                packages.Add(new Package
+                {
+                    MaxWeight = maxPackageWeight,
+                    PackageItems = packageItems
+                });
+            }
+
+            return packages;
+        }
+
         public List<PackageItem> ProcessFileLine(string fileLinePackageItems)
         {
+            if (string.IsNullOrEmpty(fileLinePackageItems))
+            {
+                throw new APIException($"{nameof(fileLinePackageItems)} is empty");
+            }
+
             var packageItems = fileLinePackageItems.Split(' ');
 
             if (packageItems == null || packageItems.Length < 1)
@@ -46,7 +93,7 @@ namespace com.mobiquity.packer.Services
             var packageItemSb = new StringBuilder(fileLineItem);
 
             packageItemSb = packageItemSb.Remove(0, 1);
-
+                
             var packageItemLength = packageItemSb.Length;
 
             packageItemSb = packageItemSb.Remove(packageItemLength - 1, 1);
