@@ -1,7 +1,7 @@
-﻿using com.mobiquity.packer.Models;
+﻿using com.mobiquity.packer.Extensions;
+using com.mobiquity.packer.Models;
 using com.mobiquity.packer.Services.Interfaces;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -54,7 +54,7 @@ namespace com.mobiquity.packer.Services
                 }
 
                 // Parse the first Part of the Line, the Maximum Capacity of the Package
-                var maxPackageWeight = GetNumber(lineParts[0]);
+                var maxPackageWeight = lineParts[0].GetNumber();
 
                 // Parse the Package Items that might be Included / Selected in the Package
                 var packageItems = ProcessFileLine(lineParts[1].Trim());
@@ -106,58 +106,32 @@ namespace com.mobiquity.packer.Services
 
             var packageItemSb = new StringBuilder(fileLineItem);
 
+            // Remove the First Curly Brace
             packageItemSb = packageItemSb.Remove(0, 1);
 
             var packageItemLength = packageItemSb.Length;
 
+            // Remove the Last Curly Brace
             packageItemSb = packageItemSb.Remove(packageItemLength - 1, 1);
 
             var packageItem = packageItemSb.ToString();
 
+            // Split Package Item into Index, Weight and Value (Price or Profit)
             var packageItemDetails = packageItem.Split(',');
 
+            // Check if the Package item is in the correct format or not
             if (packageItemDetails.Length != 3)
             {
                 throw new APIException("Input wasn't in the correct format, correct format is (index, weight, value)");
             }
 
-            var packageItemIndex = GetNumber(packageItemDetails[0]);
-            var packageItemWeight = GetFloatNumber(packageItemDetails[1]);
-            var packageItemPrice = GetCurrency(packageItemDetails[2]);
+            var packageItemIndex = packageItemDetails[0].GetNumber();
+            var packageItemWeight = packageItemDetails[1].GetFloatNumber();
+            var packageItemPrice = packageItemDetails[2].GetCurrency();
 
             var package = new PackageItem(packageItemIndex, packageItemWeight, packageItemPrice);
 
             return package;
-        }
-
-        public int GetNumber(string numberAsString)
-        {
-            if (int.TryParse(numberAsString, out int convertedNumber))
-            {
-                return convertedNumber;
-            }
-
-            throw new APIException($"{numberAsString} is not correct number");
-        }
-
-        public float GetCurrency(string numberAsString)
-        {
-            if (float.TryParse(numberAsString, NumberStyles.Currency, new CultureInfo("fr-FR"), out float value))
-            {
-                return value;
-            }
-
-            throw new APIException("The supplied value cannot be converted to currency");
-        }
-
-        public float GetFloatNumber(string numberAsString)
-        {
-            if (float.TryParse(numberAsString, out float convertedNumber))
-            {
-                return convertedNumber;
-            }
-
-            throw new APIException($"{numberAsString} is not correct number");
         }
     }
 }

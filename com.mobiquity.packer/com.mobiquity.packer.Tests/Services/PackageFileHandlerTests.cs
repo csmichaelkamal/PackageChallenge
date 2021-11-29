@@ -11,9 +11,9 @@ namespace com.mobiquity.packer.Tests.Services
     {
         #region Private Members
 
-        private PackageFileHandler _packageFileHandler;
+        private PackageFileHandler packageFileHandler;
 
-        private string _baseDirectory;
+        private string baseDirectory;
 
         #endregion
 
@@ -22,8 +22,8 @@ namespace com.mobiquity.packer.Tests.Services
         [SetUp]
         public void Setup()
         {
-            _packageFileHandler = new PackageFileHandler();
-            _baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            packageFileHandler = new PackageFileHandler();
+            baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
         }
 
         #endregion
@@ -34,7 +34,7 @@ namespace com.mobiquity.packer.Tests.Services
         [Category("ProcessFileLineItem")]
         public void ProcessFileLineItem_WhenPassCorrectData_ShouldReturnPackageItem()
         {
-            var packageItem = _packageFileHandler.ProcessFileLineItem("(1,53.38,€45)");
+            var packageItem = packageFileHandler.ProcessFileLineItem("(1,53.38,€45)");
 
             Assert.IsInstanceOf(typeof(PackageItem), packageItem);
 
@@ -47,14 +47,14 @@ namespace com.mobiquity.packer.Tests.Services
         [Category("ProcessFileLineItem")]
         public void ProcessFileLineItem_WhenMissingCurlyBraces_ShouldThrowException()
         {
-            Assert.Throws(typeof(APIException), () => _packageFileHandler.ProcessFileLineItem("1,53.38,€45)"));
+            Assert.Throws(typeof(APIException), () => packageFileHandler.ProcessFileLineItem("1,53.38,€45)"));
         }
 
         [Test]
         [Category("ProcessFileLine")]
         public void ProcessFileLine_WhenPassEmptyString_ShouldThrowException()
         {
-            Assert.Throws(typeof(APIException), () => _packageFileHandler.ProcessFileLine(string.Empty));
+            Assert.Throws(typeof(APIException), () => packageFileHandler.ProcessFileLine(string.Empty));
         }
 
         [Test]
@@ -62,7 +62,7 @@ namespace com.mobiquity.packer.Tests.Services
         public void ProcessFileLine_WhenPassCorrectData_ShouldReturnListOfPackageItems()
         {
             var packageLine = "(1,33.5,50) (2,77,86) (3,56,98)";
-            var packageItems = _packageFileHandler.ProcessFileLine(packageLine);
+            var packageItems = packageFileHandler.ProcessFileLine(packageLine);
 
             Assert.That(packageItems.Count == 3);
 
@@ -88,7 +88,7 @@ namespace com.mobiquity.packer.Tests.Services
             "8 : (1,15.3,€34)"
             };
 
-            var packages = _packageFileHandler.ProcessFileLines(input);
+            var packages = packageFileHandler.ProcessFileLines(input);
 
             Assert.That(packages.Count == 2);
         }
@@ -97,9 +97,9 @@ namespace com.mobiquity.packer.Tests.Services
         [Category("ProcessFile")]
         public void ProcessFile_WhenPassCorrectFilePath_ShouldReturnListOfParsedPackages()
         {
-            var filePath = $"{_baseDirectory}\\TestFiles\\Packages_Valid_Data.txt";
+            var filePath = $"{baseDirectory}\\TestFiles\\Packages_Valid_Data.txt";
 
-            var packages = _packageFileHandler.HandlePackageFile(filePath);
+            var packages = packageFileHandler.HandlePackageFile(filePath);
 
             Assert.That(packages.Count == 4);
         }
