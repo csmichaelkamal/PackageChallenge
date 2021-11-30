@@ -5,6 +5,6 @@ namespace com.mobiquity.packer.Services.Interfaces
 {
     public interface IPackageItemSelector
     {
-        string Select(List<Package> packages);
+        List<string> Select(List<Package> packages);
     }
 }

@@ -41,7 +41,7 @@ namespace com.mobiquity.packer.Tests.Services
             var packages = new List<Package>()
             {
                 new Package {
-                    MaxWeight   = 81,
+                    MaxWeight = 81,
                     PackageItems = new List<PackageItem>
                                     {
                                         new PackageItem(3, 33.2, 20),
@@ -53,7 +53,7 @@ namespace com.mobiquity.packer.Tests.Services
 
             var output = packageItemsSelector.Select(packages);
 
-            Assert.AreEqual(string.Empty, output);
+            Assert.AreEqual("4,3", output[0]);
         }
 
         #endregion
