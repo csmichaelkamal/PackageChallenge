@@ -16,7 +16,20 @@ namespace com.mobiquity.packer.Services
 
         public string Select(List<Package> packages)
         {
-            throw new NotImplementedException();
+            if (packages == null || packages.Count < 1)
+            {
+                throw new APIException($"{nameof(packages)} cannot be null or empty, " +
+                    $"it must contain at least one valid package");
+            }
+
+            foreach (var package in packages)
+            {
+                package.PackageItems.Sort();
+
+
+            }
+
+            return string.Empty;
         }
     }
 }

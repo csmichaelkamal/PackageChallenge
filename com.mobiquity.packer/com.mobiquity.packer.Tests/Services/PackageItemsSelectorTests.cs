@@ -1,5 +1,7 @@
+using com.mobiquity.packer.Models;
 using com.mobiquity.packer.Services;
 using NUnit.Framework;
+using System.Collections.Generic;
 
 namespace com.mobiquity.packer.Tests.Services
 {
@@ -7,6 +9,7 @@ namespace com.mobiquity.packer.Tests.Services
     {
         #region Private Members
 
+        private PackageFileHandler packageFileHandler;
         private PackageItemsSelector packageItemsSelector;
 
         #endregion
@@ -16,7 +19,8 @@ namespace com.mobiquity.packer.Tests.Services
         [SetUp]
         public void Setup()
         {
-            packageItemsSelector = new PackageItemsSelector();
+            packageFileHandler = new PackageFileHandler();
+            packageItemsSelector = new PackageItemsSelector(packageFileHandler);
         }
 
         #endregion
@@ -25,9 +29,31 @@ namespace com.mobiquity.packer.Tests.Services
 
         [Test]
         [Category("PackageItemsSelector")]
-        public void PackageItemsSelectorSelect_WhenPassCorrectData_ShouldReturnPackageItem()
+        public void PackageItemsSelectorSelect_WhenPassNull_ShouldThrowException()
         {
+            Assert.Throws(typeof(APIException), () => packageItemsSelector.Select(null));
+        }
 
+        [Test]
+        [Category("PackageItemsSelector")]
+        public void PackageItemsSelectorSelect_WhenPassLisOfPackage_ShouldReturnString()
+        {
+            var packages = new List<Package>()
+            {
+                new Package {
+                    MaxWeight   = 81,
+                    PackageItems = new List<PackageItem>
+                                    {
+                                        new PackageItem(3, 33.2, 20),
+                                        new PackageItem(4, 43.2, 90),
+                                        new PackageItem(1, 78.4, 30)
+                                    }
+                            }
+            };
+
+            var output = packageItemsSelector.Select(packages);
+
+            Assert.AreEqual(string.Empty, output);
         }
 
         #endregion
