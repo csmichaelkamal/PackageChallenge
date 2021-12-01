@@ -20,7 +20,7 @@ namespace com.mobiquity.packer.Tests.Services
         public void Setup()
         {
             packageFileHandler = new PackageFileHandler();
-            packageItemsSelector = new PackageItemsSelector(packageFileHandler);
+            packageItemsSelector = new PackageItemsSelector();
         }
 
         #endregion

@@ -9,16 +9,13 @@ namespace com.mobiquity.packer.Services
 {
     public class PackageItemsSelector : IPackageItemSelector
     {
-        private readonly IPackageFileHandler _packageFileHandler;
-
-        public PackageItemsSelector(IPackageFileHandler packageFileHandler)
+        public PackageItemsSelector()
         {
-            _packageFileHandler = packageFileHandler;
         }
 
         public List<string> Select(List<Package> packages)
         {
-            if (packages == null || packages.Count < 1)
+            if (packages == null || !packages.Any())
             {
                 throw new APIException($"{nameof(packages)} cannot be null or empty, " +
                     $"it must contain at least one valid package");
