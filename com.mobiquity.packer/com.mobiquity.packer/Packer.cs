@@ -47,12 +47,9 @@ namespace com.mobiquity.packer
                 throw new APIException("No packages has been selected, please make sure from the input file");
             }
 
-            foreach (var selectedPackage in selectedPackages)
-            {
-                return selectedPackage;
-            }
+            var finalOutput = string.Join(System.Environment.NewLine, selectedPackages);
 
-            return string.Empty;
+            return finalOutput;
         }
     }
 }
